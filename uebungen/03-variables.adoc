@@ -42,5 +42,5 @@ c) Gib einen Satz aus, der sowohl die Variable `stadt` als auch `land` enthält,
 
 == 6. Variablen und Subshells
 
-a) Erstelle eine Variable mit dem Namen `foo` und weise ihr den Wert "bar" zu. Öffne nun eine Subshell, indem du das Kommando `bash` eingibst. Lass dir nun den Inhalt der Variabla `foo` ausgeben. Steht dort immer noch "bar" drin? Was ist passiert? Wie kann die Variable `foo` auch in sämtlichen Subshells verfügbar gemacht werden?
+a) Erstelle eine Variable mit dem Namen `foo` und weise ihr den Wert "bar" zu. Öffne nun eine Subshell, indem du das Kommando `bash` eingibst. Lass dir nun den Inhalt der Variabla `foo` ausgeben. Steht dort immer noch "bar" drin? Was ist passiert? Wie kann die Variable `foo` _nachträglich_, also ohne sie neu zu erstellen, auch in sämtlichen Subshells verfügbar gemacht werden?
 
