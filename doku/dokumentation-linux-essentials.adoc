@@ -1,0 +1,98 @@
+= Dokumentation Linux Essentials
+:toc:
+
+== Grundlegende Kommandos
+
+* `cd <verzeichnis>`: in das Verzeichnis `<verzeichnis>` wechseln
+* `cd` wechselt ins Heimatverzeichnis des aktuellen Benutzers
+* `cat <datei>`: Inhalt von `<datei>` ausgeben
+* `less <datei>`: Inhalt von `<datei>` in einem Pager ausgeben (seitenweise, Möglichkeit zur Suche etc.)
+* `echo`: gibt alle Argumente aus
+* `echo $var`: gibt den Inhalt der Variablen `$var` aus
+* kann auch zum Debugging verwendet werden: `echo ls *.txt` zeigt z.B. das Ergebnis des Globbings an ohne das Kommando an sich auszuführen (`echo bla.txt hallo.txt huhu.txt`)
+* `touch <datei>` erstellt `<datei>` falls nicht vorhanden, ansonten ändert `touch` Zeitstempel
+
+== Hilfe auf der Kommandozeile
+
+* Option `<kommanod> --help`
+* Manpages `man <kommando>`: gibt es in der Regel nur für _extern_ realisierte Kommandos, nicht für _Builtins_ (z.B. `cd`, `export`, `alias` usw.)
+* `help <builtin>` zeigt die Hifle Seite für Builtins an
+* `help` Liste aller Builtins
+* `type <kommanod>` zeigt die Art eines Kommandos an: extern, Builtin, Alias etc.
+* Info System: `info <kommando>` zeigt die Info-Seite eines Kommandos an. Info Seiten sind noch ausführlicher als die Manpages, gibt es aber nicht für alle Kommandos, muss mit `apt install info` installiert werden
+
+== Pfadangaben
+
+* absoluter Pfad: kompletter Pfad, *immer* ausgehend vom Wurzelverzeichnis `/`, beginnt also immer mit einem `/`, einzige Ausnahme ist die Verwendung der Tilde `~` (aber diese steht ja für `/home/<user>`
+* relativer Pfad: ausgehend vom *aktuellen* Verzeichnis, beginnt *nie* mit einem `/`
+
+== Dateioperationen
+
+* `cp <quelle> <ziel>`: Kopiert die Datei `<quelle>` nach `<ziel>`. `<ziel>` kann entweder eine Datei oder ein Verzeichnis sein.
+* `cp -r <quellverzeichnis> <zielverzeichnis>`: Kopiert das gesamte Verzeichnis inkl. Inhalt (`-r`: _rekursiv_)
+* `rm <datei>`: löscht die Datei ohne Nachfrage
+* `rm -r <verzeichnis>`: löscht das gesamte Verzeichnis inkl. Inhalt ohne Nachfrage
+* `mv <quelle> <ziel>`: Verschiebt `<quelle>` nach `<ziel>`. `<quelle>` kann sowohl eine Datei als auch ein Verzeichnis sein. Es gibt keine Option `-r` für `mv`
+* `mv <quelle> <ziel>`: benennt `<quelle>` in `<ziel>` um
+* `-i` _Interactive_: kann `cp`, `mv` und `rm` übergeben werden, so dass eine Nachfrage erscheint, falls eine Datei überschrieben oder gelöscht würde
+
+== Sonderzeichen und Escaping
+
+* In der BASH gibt es bestimmte Sonderzeichen, welche nicht als reguläre Satzzeichen interpretiert werden, sonder eine Sonderbedeutung haben.
+* Eins der wichtigsten Sonderzeichen ist das Leerzeichen/Space, dies ist das *Trennzeichen*, hiermit erkennt die Shell z.B. was eine Kommando ist, was eine Option, was ein Argument usw.
+* Wollen wir ein Sonderzeichen als reguläres Satzzeichen darstellen ohne Sonderbedeutung, so müssen wir dieses Zeichen _maskieren_ bzw. _escapen_:
+* die doppelten Anführungszeichen `"` escapen alle Sonderzeichen bis auf das `$` (Substitution)
+* die einfachen Sonderzeichen `'` escapen sämtliche Sonderzeichen
+* der Backslash `\` maskiert das direkt darauffolgende Zeichen
+* einige Sonderzeichen: 
+** `<kommanod1> ; <kommando2>`: beide Kommandos werden nacheinander ausgeführt, unabhängig, ob sie erfolgreich waren oder nicht 
+** `<kommando1> && <kommando2>`: `<kommando2>` wird nur dann ausgeführt, wenn `<kommando1>` *erfolgreich ausgeführt* werden konnte
+** `<kommando1> || <kommando2>`: `<kommando2>` wird nur dann ausgeführt, wenn `<kommando1>` *nicht erfolgreich ausgeführt* werden konnte
+** `~`: Abkürzung für das Heimatverzeichnis des aktuellen Benutzers
+** `$`: Substitution/Ersetzung, z.B.: `$var` `$(kommando)` `$(( berechnung ))`
+** `#`: Leitet einen Kommentar ein
+** `*`: Globbing Character (Asterisk) - steht für ein beliebiges Zeichen, dass beliebig oft vorkommen darf (auch kein Mal)
+** `?`: Globbing Character - steht für ein beliebiges Zeichen, dass exakt einaml vorkommt
+
+== Variablen
+
+* es gibt zwei Arten von Variablen: 
+** Shellvariablen: sind nur in der aktuellen Shell gültig
+** Umgebungsvariablen: sind in allen Shells gültig (werden komplett in Großbuchstaben geschrieben [Konvention]), müssen in bestimmten Dateien konfiguriert werden (z.B. `~/.bashrc`, `~/.profile` etc.)
+* mit dem Kommado `export` kann eine Shellvariable auch in Subshells verfügbar gemacht werden
+
+== Subshells
+
+Eine Shell, die innerhalb einer anderen Shell geöffnet wird. Passiert relativ oft, ohne dass wir es direkt merken, z.B. bei der Kommandosubstitution, beim Aufruf von Funktionen in Skripten usw. Eine Subshell ist abhängig von der Elternshell. Wird die Elternshell geschlossen, werden gleichzeitig auch alle Subshells geschlossen.
+
+== Autocompletion
+
+Mit der TAB-Taste können Pfade, Kommandos, Optionen usw. automatisch vervollständigt werden. Gibt es mehrere Möglichkeiten zur Vervollständigung, kann man zweimal die TAB-Taste drücken und erhält eine Übersicht über die verschiedenen Möglichkeiten.
+
+== Brace Expansion
+
+* `touch file_{001..100}.txt` erstellt 100 Dateien mit den Namen `file_001.txt` bis `file_100.txt`
+* `ls *.{txt,pdf}` zeigt alle `txt` und `pdf` Dateien an
+
+== Konfigurationsdateien
+
+* Systemweite Konfigurationsdateien: liegen immer unter `/etc`, sind für alle Benutzer gültig (z.B. `/etc/bash.bashrc`)
+* Benutzerspezifische Konfigurationsdateien: liegen immer im Heimatverzeichnis des Benutzers, beginnen immer mit einem Punkt (`.`) oder liegen in einem Verzeichnis, das mit einem Punkt beginnt (z.B. `~/.bashrc`, `~/.config/htop`)
+* Einträge in den benutzerspezifischen Konfigurationsdateien überschreiben ggf. Einträge aus der systemweiten
+* So können Bentzer selbst gewisse Einstellungen vorhnehmen ohne Root-Rechte haben zu müssen, z.B. Aliase erstellen, die BASH konfigurieren...
+
+== Filterkommandos
+
+* `grep PATTERN <datei>`: gibt alle Zeilen aus `<datei>` aus, in denen das `PATTERN` vorkommt
+* `head`
+* `tail`
+
+
+
+
+
+
+
+
+
+
