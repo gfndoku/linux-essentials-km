@@ -83,12 +83,53 @@ Mit der TAB-Taste können Pfade, Kommandos, Optionen usw. automatisch vervollst�
 
 == Filterkommandos
 
+=== grep
+
+Mit `grep` kann der Inhalt von Dateien nach einem `PATTERN` durchsucht werden. Es wird die gesamte Zeile ausgegeben, in dene `PATTERN` vorkommt. 
+
 * `grep PATTERN <datei>`: gibt alle Zeilen aus `<datei>` aus, in denen das `PATTERN` vorkommt
-* `head`
-* `tail`
+* `grep -c PATTERN <datei>`: gibt die Anzahl der Zeilen aus, auf die `PATTERN` passt
+* `grep -v PATTERN <datei>`: _inVertiert_ das Ergebnis, gibt also alle Zeilen aus, auf die `PATTERN` *nicht* passt
+* `grep -E PATTERN <datei>`: `PATTERN` kann ein _erweiterter_ Regulärer Ausdruck sein (_extended RegEx_)
+* `grep -i PATTERN <datei>`: Case Insensitive Suche, also keine Beachtung von Groß- und Kleinschreibung
+* `grep -n PATTERN <datei>`: Gibt zusätzlich Zeilennummern aus
+* `grep -r PATTERN <verzeichnis>`: durchsucht alle Dateien im Verzeichnis `verzeichnis` rekursiv nach `PATTERN`
 
+=== cut
 
+Mit `cut` können Spalten aus tabellarisch aufgebauten Textströmen/-dateien ausgeschnitten werden.
 
+* `cut -f<spalte/field>`: zeige nur die n-te Spalte an 
+* `cut -d<trennzeichen/delimiter>`: nutze `<trennzeichen>` als Delimiter (Standard ist TAB)
+* `cut -d: -f7 /etc/passwd`: zeige nur die 7. Spalte der Datei `/etc/passwd` an
+* `cut -d: -f1,7 /etc/passwd`: zeige nur die 1. und 7. Spalte der Datei `/etc/passwd` an
+
+=== head und tail
+
+* `head`: zeigt die ersten 10 Zeilen einer Datei/Textstroms an
+* `head -n 20`: zeigt die ersten 20 Zeilen einer Datei/Textstroms an
+* `tail`: zeigt die letzten 10 Zeilen einer Datei/Textstroms an
+* `tail -n 20`: zeigt die letzten 20 Zeilen einer Datei/Textstroms an
+* `tail -f`: zeigt die letzten 10 Zeilen einer Datei/Textstroms an und aktualisiert die Ausgabe fortlaufend. Wir können so Änderungen an der Datei live beobachten
+
+== Paketmanagement
+
+=== Debian basierte Distributionen
+
+* `apt-get update`: Aktualisiert die Paketliste, keine Änderungen am System
+* `apt-get upgrade`: Aktualisiert sämtliche Pakete auf dem System auf die in der Paketliste angegebene Version
+* `apt-get install <paket>`: Installiert das Paket `<paket>` inkl. aller zum Betrieb notwendigen Abhängigkeiten
+* `apt-get remove <paket>`: Entfernt das Paket `<paket>`, Konfigurationsdateien bleiben erhalten
+* `apt-get remove --purge <paket>`: Entfernt das Paket `<paket>`, Konfigurationsdateien werden mit entfernt
+* `apt-get purge <paket>`: Entfernt das Paket `<paket>`, Konfigurationsdateien werden mit entfernt
+* `apt-cache <suchbegriff>`: Durchsucht die Paketliste nach Paketen auf die der Suchbegriff passt
+
+=== RedHat basierte Distributionen
+
+* `yum update`: Aktualisiert die Paketliste und alle auf dem System vorhandenen Pakete in einem Schritt
+* `yum install <paket>`: Installiert das Paket `<paket>` inkl. aller zum Betrieb notwendigen Abhängigkeiten
+* `yum remove <paket>`: Entfernt das Paket `<paket>`, Konfigurationsdateien bleiben erhalten
+* `yum search <suchbegriff>`: Durchsucht die Paketliste nach Paketen auf die der Suchbegriff passt
 
 
 
