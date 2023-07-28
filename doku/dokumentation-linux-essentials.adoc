@@ -131,6 +131,118 @@ Mit `cut` können Spalten aus tabellarisch aufgebauten Textströmen/-dateien aus
 * `yum remove <paket>`: Entfernt das Paket `<paket>`, Konfigurationsdateien bleiben erhalten
 * `yum search <suchbegriff>`: Durchsucht die Paketliste nach Paketen auf die der Suchbegriff passt
 
+== Berechtigungen
+
+Berechtigungen können vom Besitzer der Datei oder `root` mit dem Kommando `chmod` geändert werden.
+
+=== symbolische Rechtevergabe
+
+* `r`: read/lesen
+* `w`: write/schreiben
+* `x`: execute/ausführen
+
+Füge das Ausführungsrecht für den Besitzer der Datei hinzu:
+
+ chmod u+x script.sh      # u: user
+
+Füge das Ausführungsrecht für die Gruppe der Datei hinzu:
+
+ chmod g+x script.sh      # g: group
+
+Füge das Ausführungsrecht für den Rest der Welt hinzu:
+
+ chmod o+x script.sh      # o: others
+
+Entziehe das Schreibrecht auf die Datei für die Gruppe und den Rest der Welt:
+
+ chmod go-w datei
+
+Setze die Rechte für Besitzer und Gruppe auf lesen und schreiben:
+
+ chmod ug=rw datei
+
+=== oktale Rechtevergabe
+
+Jedes Berechtigungsbit wird durch eine Oktalzahl repräsentiert:
+
+* `r`: 4
+* `w`: 2 
+* `x`: 1
+
+Berechtigungen können immer nur gesamt für User, Group und Others vergeben werden, nicht einzeln. Wir können Berechtigungen also nur komplett setzen. Die Werte der einzelnen Berechtigungen werden addiert.
+
+Lese-, Schreibe- und Ausführungsrecht für User, Lese- und Ausführungsrecht für Group, nur Leserecht für Others:
+
+ chmod 754 datei
+
+Herkunft Notation:
+
+ Okt  Bin
+  1   001 
+  2   010
+  4   100
+
+ 111110100 
+ rwxrw-r--
+
+=== Sonderbits
+
+==== SUID-Bit / SetUserId-Bit
+
+Auf einen ausführbare Binärdatei gesetzt, bewirkt das SUID-Bit, dass die Datei mit den Berechtigungen des Besitzers der Datei ausgeführt wird, anstatt mit den Berechtigungen des aufrufenden Benutzers.
+
+ chmod u+s datei
+ chmod 4664 datei
+
+Beispiel: `/usr/bin/passwd`
+
+ -rwsr-xr-x 1 root root 63960 Feb  7  2020 /usr/bin/passwd
+
+==== SGID-Bit / SetGroupId-Bit
+
+Auf einen ausführbare Binärdatei gesetzt, bewirkt das SGID-Bit, dass die Datei mit den Berechtigungen des Gruppe der Datei ausgeführt wird, anstatt mit den Berechtigungen des aufrufenden Benutzers.
+
+Auf ein Verzeichnis gesestzt, bewirkt es, dass alle neu darin erstellten Dateien der Gruppe zugeordnet werden, der auch das Verzeichnis zugeordnet ist.
+
+ chmod g+s datei
+ chmod 2664 datei
+
+Beispiel: `/var/mail`:
+
+ drwxrwsr-x 2 root mail 4096 Jul 28 08:43 mail/
+
+==== StickyBit
+
+Auf ein Verzeichnis gesetzt, bewirkt es, dass darin enthaltene Dateien nur von ihrem Besitzer oder `root` geändert oder gelöscht werden können.
+
+ chmod o+t datei
+ chmod 1664 datei
+
+Beispiel: `/tmp`:
+
+ drwxrwxrwt 11 root root 4096 Jul 28 08:26 /tmp/
+
+== Skripte
+
+* Skripte beginnen mit dem _Shebang_, also der Angabe des Interpreters (BASH, Python, Perl, Ruby, PHP ...)
+* Kommentare werden durch eine Raute (`#`) eingeleitet
+
+=== Besondere Variablen
+
+* `$0`: Name des Skripts
+* `$1`: Erster beim Aufruf des Skripts übergebener Parameter
+* `$2`: Zweiter beim Aufruf des Skripts übergebener Parameter
+* `$3`: Dritter beim Aufruf des Skripts übergebener Parameter
+* `$4`: Vierter beim Aufruf des Skripts übergebener Parameter usw.
+* `$#`: Anzahl der dem Skript übergebenen Parameter
+* `$@`: Enthält alles dem Skript übergebenen Parameter
+* `$*`: Enthält alles dem Skript übergebenen Parameter
+* `$$`: PID des Skripts
+* `$?`: Enthält den Rückgabewert des zuletzt ausgeführten Kommandos (steht hier eine 0, war das zuletzt ausgeführte Kommando erfolgreich, steht irgendetwas anderes darin, wurde das Kommando *nicht* erfolgreich _ausgeführt_
+
+
+
+
 
 
 
