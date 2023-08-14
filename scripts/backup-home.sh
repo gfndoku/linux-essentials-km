@@ -24,24 +24,73 @@ fi
 # [ $EUID -ne 0 ] && exit 1
 
 #dirs_to_backup="/home/$USER /etc /var/mail /var/log"
-dirs_to_backup="/home"
-backup_dest="/root/backups"
+#dirs_to_backup="/home" 
+backup_destination="/root/backups"
 backup_file="backup_home_$(date +%Y%m%d_%H%M).tar.bz2"
 
-mkdir -p $backup_dest
+# Backup-Zielverzeichnis
+backup_destination="/root/backups/"
 
-## TODO: check if dir is present
+# check if dir is present
+
+# Möglichkeit 1
+if [ ! -d $backup_destination ]
+then	
+  echo Create backup dir: $backup_destination
+  mkdir $backup_destination
+fi
 
 # Möglichkeit 2
-#if [ ! -d $backup_dest ]
-#then	
-#  echo Create backup dir: $backup_dest
-#  mkdir $backup_dest
-#fi
-
-# Möglichkeit 3
-# [ -d $backup_dest ] || mkdir $backup_dest
-
+# [ -d $backup_destination ] || mkdir $backup_destination
 
 # Create the backup
-tar -cvjf $backup_dest/$backup_file $dirs_to_backup
+
+# Möglichkeit 1
+#tar -cvjf $backup_destination/$backup_file $dirs_to_backup #nur Input per Variable
+
+# Möglichkeit 2 (mit vorheriger Auswahl)
+# Auszuwählende Verzeichnisse
+
+ask_for_dirs () {
+        echo "Bitte Verzeichnis aussuchen: "
+        #auswahl=$(find /home/* -maxdepth 0 -type d -exec echo -e  {}\n \; | nl)
+        find /home/* -maxdepth 0 -type d | nl
+        read -p "Bitte Verzeichnisnummer auswählen: " selection
+        directory=$(find /home/* -maxdepth 0 -type d | nl | grep $selection | cut -f2)
+}
+
+# Backup ausgewählter Verzeichnisse
+backup_selected_directories() {
+    # Hier gewünschte Verzeichnisse hinzufügen
+    source_directories=($directory)
+
+    for dir in "${source_directories[@]}"; do
+        echo "Sichere Verzeichnis: $dir"
+        tar -cvjf "${backup_destination}backup_$(date +'%Y%m%d_%H%M%S').tar.bz2" "$dir"
+    done
+}
+
+# Backup des Heimatverzeichnisses
+backup_home_directory() {
+    echo "Sichere Heimatverzeichnis: $HOME"
+    tar -cvjf "${backup_destination}backup_home_$(date +'%Y%m%d_%H%M%S').tar.bz2" "$HOME"
+}
+
+# Archivierung und Komprimierung (tar, bzip2) des Backups
+create_backup() {
+    # Backup ausgewählter Verzeichnisse
+    backup_selected_directories
+
+    # Backup des Heimatverzeichnisses
+    #backup_home_directory
+}
+
+# Hauptfunktion, die das Backup erstellt
+main() {
+        ask_for_dirs
+        create_backup
+
+}
+
+# Hauptfunktion aufrufen
+main
